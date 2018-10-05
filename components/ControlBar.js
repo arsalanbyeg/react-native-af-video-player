@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { ToggleIcon, Time, Scrubber } from './'
+import { ToggleIcon, Time, Scrubber, Speed } from './'
 
 const styles = StyleSheet.create({
   container: {
@@ -19,6 +19,7 @@ const ControlBar = (props) => {
     onSeekRelease,
     progress,
     currentTime,
+    currentSpeed,
     duration,
     muted,
     fullscreen,
@@ -26,8 +27,36 @@ const ControlBar = (props) => {
     inlineOnly
   } = props
 
+  _seekTo = (action) => {
+    var seekTime = (action) ? (props.currentTime - 30) : (props.currentTime + 30);
+    if (seekTime < 0) {
+      seekTime = 0;
+    }
+    else if(seekTime > props.duration) {
+      seekTime = props.duration
+    }
+    props.forward(seekTime);
+  }
   return (
     <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={styles.container}>
+      <ToggleIcon
+        paddingLeft
+        theme={theme.volume}
+        onPress={() => _seekTo(true)}
+        isOn={true}
+        iconOff="fast-rewind"
+        iconOn="fast-rewind"
+        size={20}
+      />
+      <ToggleIcon
+        paddingLeft
+        theme={theme.volume}
+        onPress={() => _seekTo(false)}
+        isOn={true}
+        iconOff="fast-forward"
+        iconOn="fast-forward"
+        size={20}
+      />
       <Time time={currentTime} theme={theme.seconds} />
       <Scrubber
         onSeek={pos => onSeek(pos)}
@@ -43,6 +72,13 @@ const ControlBar = (props) => {
         iconOff="volume-up"
         iconOn="volume-mute"
         size={20}
+      />
+      <Speed
+        paddingLeft
+        theme={theme.volume}
+        onPress={() => props.speed()}
+        size={15}
+        currentSpeed={currentSpeed}
       />
       <Time time={duration} theme={theme.duration} />
       { !inlineOnly &&
@@ -63,11 +99,15 @@ ControlBar.propTypes = {
   toggleMute: PropTypes.func.isRequired,
   onSeek: PropTypes.func.isRequired,
   onSeekRelease: PropTypes.func.isRequired,
+  rewind: PropTypes.func.isRequired,
+  forward: PropTypes.func.isRequired,
   fullscreen: PropTypes.bool.isRequired,
+  speed: PropTypes.func,
   muted: PropTypes.bool.isRequired,
   inlineOnly: PropTypes.bool.isRequired,
   progress: PropTypes.number.isRequired,
   currentTime: PropTypes.number.isRequired,
+  currentSpeed: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
   theme: PropTypes.object.isRequired
 }

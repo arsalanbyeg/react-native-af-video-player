@@ -63,6 +63,7 @@ class Video extends Component {
       duration: 0,
       progress: 0,
       currentTime: 0,
+      rate: this.props.rate,
       seeking: false,
       renderError: false
     }
@@ -201,6 +202,24 @@ class Video extends Component {
       return true
     }
     return false
+  }
+
+  changeRate() {
+    switch (this.state.rate) {
+      case 0.5:
+        this.setState({rate : 1.0});
+        break;
+      case 1.0:
+        this.setState({rate : 2.0});
+        break;
+      case 2.0:
+        this.setState({rate : 0.5});
+        break;
+        
+        default:
+        this.setState({rate : 1.0});
+        break;
+    }
   }
 
   pause() {
@@ -387,7 +406,7 @@ class Video extends Component {
           repeat={loop}
           style={fullScreen ? styles.fullScreen : inline}
           ref={(ref) => { this.player = ref }}
-          rate={rate}
+          rate={this.state.rate}
           volume={volume}
           muted={muted}
           playInBackground={playInBackground} // Audio continues to play when app entering background.
@@ -406,6 +425,10 @@ class Video extends Component {
           toggleMute={() => this.toggleMute()}
           toggleFS={() => this.toggleFS()}
           togglePlay={() => this.togglePlay()}
+          rewind={pos => this.seekTo(pos)}
+          forward={pos => this.seekTo(pos)}
+          speed={() => this.changeRate()}
+          currentSpeed={this.state.rate}
           paused={paused}
           muted={muted}
           fullscreen={fullScreen}

@@ -125,6 +125,7 @@ class Controls extends Component {
       title,
       progress,
       currentTime,
+      currentSpeed,
       duration,
       theme,
       inlineOnly
@@ -154,6 +155,9 @@ class Controls extends Component {
             toggleFS={() => this.props.toggleFS()}
             toggleMute={() => this.props.toggleMute()}
             togglePlay={() => this.props.togglePlay()}
+            rewind={pos => this.props.rewind(pos)}
+            forward={pos => this.props.forward(pos)}
+            speed={() => this.props.speed()}
             muted={muted}
             paused={paused}
             fullscreen={fullscreen}
@@ -161,6 +165,7 @@ class Controls extends Component {
             onSeekRelease={pos => this.onSeekRelease(pos)}
             progress={progress}
             currentTime={currentTime}
+            currentSpeed={currentSpeed}
             duration={duration}
             theme={controlBar}
             inlineOnly={inlineOnly}
@@ -185,6 +190,9 @@ Controls.propTypes = {
   togglePlay: PropTypes.func.isRequired,
   onSeek: PropTypes.func.isRequired,
   onSeekRelease: PropTypes.func.isRequired,
+  rewind: PropTypes.func.isRequired,
+  forward: PropTypes.func.isRequired,
+  speed: PropTypes.func.isRequired,
   onMorePress: PropTypes.func.isRequired,
   paused: PropTypes.bool.isRequired,
   inlineOnly: PropTypes.bool.isRequired,
@@ -194,6 +202,7 @@ Controls.propTypes = {
   loading: PropTypes.bool.isRequired,
   progress: PropTypes.number.isRequired,
   currentTime: PropTypes.number.isRequired,
+  currentSpeed: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   logo: PropTypes.string.isRequired,
