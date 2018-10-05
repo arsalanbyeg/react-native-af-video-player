@@ -491,7 +491,7 @@ Video.propTypes = {
   rate: PropTypes.number,
   volume: PropTypes.number,
   lockRatio: PropTypes.number,
-  logo: PropTypes.string,
+  logo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   title: PropTypes.string,
   theme: PropTypes.object,
   resizeMode: PropTypes.string

@@ -205,7 +205,7 @@ Controls.propTypes = {
   currentSpeed: PropTypes.number.isRequired,
   duration: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  logo: PropTypes.string.isRequired,
+  logo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   theme: PropTypes.object.isRequired
 }
 
