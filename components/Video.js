@@ -337,7 +337,7 @@ class Video extends Component {
         <Icons
           name="replay"
           size={60}
-          color={this.props.theme}
+          color={this.props.theme.scrubberBar}
           onPress={() => this.setState({ renderError: false })}
         />
       </Animated.View>
