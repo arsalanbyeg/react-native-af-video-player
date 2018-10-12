@@ -271,9 +271,9 @@ class Video extends Component {
           this.props.onFullScreen(this.state.fullScreen)
           if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
           this.animToInline()
-          setTimeout(() => {
-            if (!this.props.lockPortraitOnFsExit) Orientation.unlockAllOrientations()
-          }, 1500)
+          // setTimeout(() => {
+          //   if (!this.props.lockPortraitOnFsExit) Orientation.unlockAllOrientations()
+          // }, 1500)
         }
       })
     })
