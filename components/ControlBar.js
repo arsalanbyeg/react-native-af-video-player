@@ -44,8 +44,8 @@ const ControlBar = (props) => {
         theme={theme.volume}
         onPress={() => _seekTo(true)}
         isOn={true}
-        iconOff="fast-rewind"
-        iconOn="fast-rewind"
+        iconOff="replay-30"
+        iconOn="replay-30"
         size={20}
       />
       <ToggleIcon
@@ -53,8 +53,8 @@ const ControlBar = (props) => {
         theme={theme.volume}
         onPress={() => _seekTo(false)}
         isOn={true}
-        iconOff="fast-forward"
-        iconOn="fast-forward"
+        iconOff="forward-30"
+        iconOn="forward-30"
         size={20}
       />
       <Time time={currentTime} theme={theme.seconds} />
