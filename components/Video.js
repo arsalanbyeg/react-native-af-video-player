@@ -206,14 +206,17 @@ class Video extends Component {
 
   changeRate() {
     switch (this.state.rate) {
-      case 0.5:
+      case 0.75:
         this.setState({rate : 1.0});
         break;
       case 1.0:
+        this.setState({rate : 1.75});
+        break;
+      case 1.75:
         this.setState({rate : 2.0});
         break;
       case 2.0:
-        this.setState({rate : 0.5});
+        this.setState({rate : 0.75});
         break;
         
         default:
