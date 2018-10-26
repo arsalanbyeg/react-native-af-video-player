@@ -210,9 +210,9 @@ class Video extends Component {
         this.setState({rate : 1.0});
         break;
       case 1.0:
-        this.setState({rate : 1.75});
+        this.setState({rate : 1.5});
         break;
-      case 1.75:
+      case 1.5:
         this.setState({rate : 2.0});
         break;
       case 2.0:
