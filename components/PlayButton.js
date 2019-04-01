@@ -23,7 +23,7 @@ const PlayButton = props => (
       <Icons
         style={styles.playButton}
         name={props.paused ? "play-circle-outline" : "pause-circle-outline"}
-        color="#ffffff"
+        color={props.theme}
         size={75}
       />
     </TouchableOpacity>
