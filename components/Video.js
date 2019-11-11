@@ -294,7 +294,8 @@ class Video extends Component {
               this.props.onPlay(!this.state.paused)
             );
           }
-          this.props.onFullScreen(this.state.fullScreen)
+          this.props.onFullScreen(this.state.fullScreen);
+          if (orientation === "PORTRAIT") Orientation.lockToLandscape();
           if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
           this.animToInline()
           // setTimeout(() => {
