@@ -16,7 +16,6 @@ import Orientation from "react-native-orientation";
 import Icons from "react-native-vector-icons/MaterialIcons";
 import { Controls } from "./";
 import { checkSource } from "./utils";
-const Win = Dimensions.get("window");
 const backgroundColor = "#000";
 
 const styles = StyleSheet.create({
@@ -58,7 +57,7 @@ class Video extends Component {
       paused: !props.autoPlay,
       muted: false,
       fullScreen: false,
-      inlineHeight: Win.width * 0.5625,
+      inlineHeight: props.windowSize.width * 0.5625,
       loading: false,
       duration: 0,
       progress: 0,
@@ -67,8 +66,8 @@ class Video extends Component {
       seeking: false,
       renderError: false
     };
-    this.animInline = new Animated.Value(Win.width * 0.5625);
-    this.animFullscreen = new Animated.Value(Win.width * 0.5625);
+    this.animInline = new Animated.Value(props.windowSize.width * 0.5625);
+    this.animFullscreen = new Animated.Value(props.windowSize.width * 0.5625);
     this.BackHandler = this.BackHandler.bind(this);
     this.onRotated = this.onRotated.bind(this);
   }
@@ -94,8 +93,8 @@ class Video extends Component {
     const ratio =
       height === "undefined" && width === "undefined" ? 9 / 16 : height / width;
     const inlineHeight = this.props.lockRatio
-      ? Win.width / this.props.lockRatio
-      : Win.width * ratio;
+      ? this.props.windowSize.width / this.props.lockRatio
+      : this.props.windowSize.width * ratio;
     this.setState(
       {
         paused: !this.props.autoPlay,
@@ -114,7 +113,7 @@ class Video extends Component {
           if (this.props.fullScreenOnly) {
             this.setState({ fullScreen: true }, () => {
               this.props.onFullScreen(this.state.fullScreen);
-              this.animToFullscreen(Win.height);
+              this.animToFullscreen(this.props.windowSize.height);
               if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
             });
           }
@@ -266,7 +265,7 @@ class Video extends Component {
               this.props.onFullScreen(this.state.fullScreen);
               const initialOrient = Orientation.getInitialOrientation();
               const height =
-                orientation !== initialOrient ? Win.width : Win.height;
+                orientation !== initialOrient ? this.props.windowSize.width : this.props.windowSize.height;
               this.animToFullscreen(height);
               if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
             });
@@ -284,7 +283,7 @@ class Video extends Component {
       Orientation.getOrientation((e, orientation) => {
         if (this.state.fullScreen) {
           const initialOrient = Orientation.getInitialOrientation();
-          const height = orientation !== initialOrient ? Win.width : Win.height;
+          const height = orientation !== initialOrient ? this.props.windowSize.width : this.props.windowSize.height;
           this.props.onFullScreen(this.state.fullScreen);
           if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
           this.animToFullscreen(height);
@@ -411,7 +410,8 @@ class Video extends Component {
     } = this.props;
 
     const inline = {
-      height: inlineHeight,
+	//   height: inlineHeight,
+	  height: "100%",
       alignSelf: "stretch"
     };
 
@@ -523,7 +523,8 @@ Video.propTypes = {
   logo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   title: PropTypes.string,
   theme: PropTypes.object,
-  resizeMode: PropTypes.string
+  resizeMode: PropTypes.string,
+  windowSize: PropTypes.object
 };
 
 Video.defaultProps = {
@@ -552,7 +553,11 @@ Video.defaultProps = {
   logo: undefined,
   title: "",
   theme: defaultTheme,
-  resizeMode: "contain"
+  resizeMode: "contain",
+  windowSize: {
+	  width: Dimensions.get("window").width,
+	  height: Dimensions.get("window").height
+  }
 };
 
 export default Video;
