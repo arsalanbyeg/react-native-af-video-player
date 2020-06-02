@@ -8,7 +8,8 @@ import {
   BackHandler,
   Animated,
   Image,
-  Alert
+  Alert,
+  Platform
 } from "react-native";
 import VideoPlayer from "react-native-video";
 import KeepAwake from "react-native-keep-awake";
@@ -59,6 +60,7 @@ class Video extends Component {
       fullScreen: false,
       inlineHeight: props.windowSize.width * 0.5625,
       loading: false,
+      videoLoaded: false,
       duration: 0,
       progress: 0,
       currentTime: 0,
@@ -88,10 +90,10 @@ class Video extends Component {
 
   onLoad(data) {
     if (!this.state.loading) return;
-    this.props.onLoad(data);
+    // this.props.onLoad(data);
     const { height, width } = data.naturalSize;
     const ratio =
-      height === "undefined" && width === "undefined" ? 9 / 16 : height / width;
+        (height === "undefined" || height == 0) && (width === "undefined" || width == 0) ? 9 / 16 : height / width;
     const inlineHeight = this.props.lockRatio
       ? this.props.windowSize.width / this.props.lockRatio
       : this.props.windowSize.width * ratio;
@@ -99,14 +101,19 @@ class Video extends Component {
       {
         paused: !this.props.autoPlay,
         loading: false,
+        videoLoaded: true,
         inlineHeight,
-        duration: data.duration
+        duration: data.duration,
+        progress: 0,
+        currentTime: 0
       },
       () => {
         Animated.timing(this.animInline, {
           toValue: inlineHeight,
           duration: 200
         }).start();
+        this.props.onLoad(data);
+        this.player.seek(0);
         this.props.onPlay(!this.state.paused);
         if (!this.state.paused) {
           KeepAwake.activate();
@@ -114,7 +121,7 @@ class Video extends Component {
             this.setState({ fullScreen: true }, () => {
               this.props.onFullScreen(this.state.fullScreen);
               this.animToFullscreen(this.props.windowSize.height);
-              if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
+              if (this.props.rotateToFullScreen && !Platform.isPad) Orientation.lockToLandscape();
             });
           }
         }
@@ -122,10 +129,9 @@ class Video extends Component {
     );
   }
 
-  // onBuffer() {
-  //   // console.log('buffering')
-  //   this.setState({ loading: true, paused: true })
-  // }
+  onBuffer = ({ isBuffering }) => {
+      if (this.state.videoLoaded) this.setState({ loading: isBuffering });
+  }
 
   onEnd() {
     this.props.onEnd();
@@ -172,7 +178,7 @@ class Video extends Component {
 
   onSeekRelease(percent) {
     const seconds = percent * this.state.duration;
-    this.setState({ progress: percent, seeking: false }, () => {
+    this.setState({ progress: percent, seeking: false, currentTime: seconds }, () => {
       this.player.seek(seconds);
     });
   }
@@ -257,24 +263,22 @@ class Video extends Component {
   togglePlay() {
     this.setState({ paused: !this.state.paused }, () => {
       this.props.onPlay(!this.state.paused);
-      Orientation.getOrientation((e, orientation) => {
+      // Orientation.getOrientation((e, orientation) => {
         if (this.props.inlineOnly) return;
         if (!this.state.paused) {
           if (this.props.fullScreenOnly && !this.state.fullScreen) {
             this.setState({ fullScreen: true }, () => {
               this.props.onFullScreen(this.state.fullScreen);
-              const initialOrient = Orientation.getInitialOrientation();
-              const height =
-                orientation !== initialOrient ? this.props.windowSize.width : this.props.windowSize.height;
+              const height = this.props.windowSize.height;
               this.animToFullscreen(height);
-              if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
+              if (this.props.rotateToFullScreen && !Platform.isPad) Orientation.lockToLandscape();
             });
           }
           KeepAwake.activate();
         } else {
           KeepAwake.deactivate();
         }
-      });
+      // });
     });
   }
 
@@ -282,10 +286,9 @@ class Video extends Component {
     this.setState({ fullScreen: !this.state.fullScreen }, () => {
       Orientation.getOrientation((e, orientation) => {
         if (this.state.fullScreen) {
-          const initialOrient = Orientation.getInitialOrientation();
-          const height = orientation !== initialOrient ? this.props.windowSize.width : this.props.windowSize.height;
+          const height = this.props.windowSize.height;
           this.props.onFullScreen(this.state.fullScreen);
-          if (this.props.rotateToFullScreen) Orientation.lockToLandscape();
+          if (this.props.rotateToFullScreen && !Platform.isPad) Orientation.lockToLandscape();
           this.animToFullscreen(height);
         } else {
           if (this.props.fullScreenOnly) {
@@ -294,12 +297,9 @@ class Video extends Component {
             );
           }
           this.props.onFullScreen(this.state.fullScreen);
-          if (orientation === "PORTRAIT") Orientation.lockToLandscape();
-          if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
-          this.animToInline()
-          // setTimeout(() => {
-          //   if (!this.props.lockPortraitOnFsExit) Orientation.unlockAllOrientations()
-          // }, 1500)
+          if (orientation === "PORTRAIT" && !Platform.isPad) Orientation.lockToLandscape();
+          if (this.props.rotateToFullScreen && !Platform.isPad) Orientation.lockToPortrait()
+          this.animToInline();
         }
       });
     });
@@ -456,7 +456,7 @@ class Video extends Component {
           onProgress={e => this.progress(e)} // Callback every ~250ms with currentTime
           onEnd={() => this.onEnd()}
           onError={e => this.onError(e)}
-          // onBuffer={() => this.onBuffer()} // Callback when remote video is buffering
+          onBuffer={this.onBuffer} // Callback when remote video is buffering
           onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
         />
         <Controls

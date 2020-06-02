@@ -47,7 +47,7 @@ const Scrubber = (props) => {
           style={styles.slider}
           onValueChange={val => onSeek(val)}
           onSlidingComplete={val => onSeekRelease(val)}
-          value={progress}
+          value={progress === Number.POSITIVE_INFINITY ? 0 : progress}
           thumbTintColor={theme.scrubberThumb}
           minimumTrackTintColor={theme.scrubberBar}
           maximumTrackTintColor={trackColor}
