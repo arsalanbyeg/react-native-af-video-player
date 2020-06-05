@@ -130,7 +130,9 @@ class Video extends Component {
   }
 
   onBuffer = ({ isBuffering }) => {
-      if (this.state.videoLoaded) this.setState({ loading: isBuffering });
+      if (this.state.videoLoaded && Platform.OS !== "ios" && (this.state.loading !== isBuffering)){
+        this.setState({ loading: isBuffering });
+      }
   }
 
   onEnd() {
@@ -347,12 +349,13 @@ class Video extends Component {
   }
 
   progress(time) {
-    const { currentTime } = time;
+    const { currentTime, playableDuration } = time;
     const progress = currentTime / this.state.duration;
     if (!this.state.seeking) {
-      this.setState({ progress, currentTime }, () => {
-        this.props.onProgress(time);
-      });
+      this.setState(() => {
+        if (Platform.OS === "ios") return { progress, currentTime, loading: currentTime >= playableDuration };
+        return { progress, currentTime };
+      }, () => this.props.onProgress(time));
     }
   }
 
