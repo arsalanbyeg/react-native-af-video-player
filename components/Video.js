@@ -114,7 +114,7 @@ class Video extends Component {
         }).start();
         this.props.onLoad(data);
         this.player.seek(0);
-        this.props.onPlay(!this.state.paused);
+        // this.props.onPlay(!this.state.paused);
         if (!this.state.paused) {
           KeepAwake.activate();
           if (this.props.fullScreenOnly) {
@@ -182,6 +182,7 @@ class Video extends Component {
     const seconds = percent * this.state.duration;
     this.setState({ progress: percent, seeking: false, currentTime: seconds }, () => {
       this.player.seek(seconds);
+      this.props.onProgress({ currentTime: seconds, isSeeked: true });
     });
   }
 
