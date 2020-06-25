@@ -354,7 +354,7 @@ class Video extends Component {
     const progress = currentTime / this.state.duration;
     if (!this.state.seeking) {
       this.setState(() => {
-        if (Platform.OS === "ios") return { progress, currentTime, loading: currentTime >= playableDuration };
+        if (Platform.OS === "ios") return { progress, currentTime, loading: !this.state.paused && currentTime >= playableDuration };
         return { progress, currentTime };
       }, () => this.props.onProgress(time));
     }
