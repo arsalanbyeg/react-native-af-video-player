@@ -11,7 +11,7 @@ import {
   Alert,
   Platform
 } from "react-native";
-import VideoPlayer from "react-native-video";
+import VideoPlayer, { TextTrackType } from "react-native-video";
 import KeepAwake from "react-native-keep-awake";
 import Orientation from "react-native-orientation";
 import Icons from "react-native-vector-icons/MaterialIcons";
@@ -411,6 +411,8 @@ class Video extends Component {
       playInBackground,
       playWhenInactive,
       progressUpdateInterval,
+      selectedTextTrackIndex,
+      textTracks
     } = this.props;
 
     const inline = {
@@ -462,6 +464,17 @@ class Video extends Component {
           onError={e => this.onError(e)}
           onBuffer={this.onBuffer} // Callback when remote video is buffering
           onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
+          { ... (textTracks)
+            ?
+              {
+                selectedTextTrack: {
+                  type: "index",
+                  value: selectedTextTrackIndex
+                },
+                textTracks: textTracks
+              }
+            : {}
+          }
         />
         <Controls
           ref={ref => {
@@ -528,7 +541,20 @@ Video.propTypes = {
   title: PropTypes.string,
   theme: PropTypes.object,
   resizeMode: PropTypes.string,
-  windowSize: PropTypes.object
+  windowSize: PropTypes.object,
+  selectedTextTrackIndex: PropTypes.number,
+  textTracks: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      uri: PropTypes.string.isRequired,
+      type: PropTypes.oneOf([
+        TextTrackType.SRT,
+        TextTrackType.TTML,
+        TextTrackType.VTT,
+      ]),
+      language: PropTypes.string.isRequired
+    })
+  )
 };
 
 Video.defaultProps = {
@@ -561,7 +587,8 @@ Video.defaultProps = {
   windowSize: {
 	  width: Dimensions.get("window").width,
 	  height: Dimensions.get("window").height
-  }
+  },
+  selectedTextTrackIndex: 0
 };
 
 export default Video;
