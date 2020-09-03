@@ -5,111 +5,156 @@ import LinearGradient from 'react-native-linear-gradient'
 import { ToggleIcon, Time, Scrubber, Speed } from './'
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    height: 35,
-    alignSelf: 'stretch',
-    justifyContent: 'flex-end'
-  }
-})
+	upperCont: {
+		flexDirection: "row",
+		height: 30
+	},
+	lowerCont: {
+		flexDirection: "row",
+		height: 40,
+		justifyContent: "space-between"
+	},
+	leftCont: {
+		flex: 0.25,
+		justifyContent: "flex-start"
+	},
+	middleCont: {
+		flex: 0.4,
+		flexDirection: "row",
+		justifyContent: "center"
+	},
+	rightCont: {
+		flex: 0.25,
+		flexDirection: "row",
+		justifyContent: "flex-end"
+	}
+});
 
 const ControlBar = (props) => {
-  const {
-    onSeek,
-    onSeekRelease,
-    progress,
-    currentTime,
-    currentSpeed,
-    duration,
-    muted,
-    fullscreen,
-    theme,
-    inlineOnly
-  } = props
+	const {
+		onSeek,
+		onSeekRelease,
+		progress,
+		currentTime,
+		currentSpeed,
+		duration,
+		muted,
+		fullscreen,
+		theme,
+		inlineOnly,
+		captions,
+		toggleCaptions
+	} = props
 
-  _seekTo = (action) => {
-    var seekTime = (action) ? (props.currentTime - 30) : (props.currentTime + 30);
-    if (seekTime < 0) {
-      seekTime = 0;
-    }
-    else if(seekTime > props.duration) {
-      seekTime = props.duration
-    }
-    props.forward(seekTime);
-  }
-  return (
-    <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={styles.container}>
-      <ToggleIcon
-        paddingLeft
-        theme={theme.volume}
-        onPress={() => _seekTo(true)}
-        isOn={true}
-        iconOff="replay-30"
-        iconOn="replay-30"
-        size={20}
-      />
-      <ToggleIcon
-        paddingLeft
-        theme={theme.volume}
-        onPress={() => _seekTo(false)}
-        isOn={true}
-        iconOff="forward-30"
-        iconOn="forward-30"
-        size={20}
-      />
-      <Time time={currentTime} theme={theme.seconds} />
-      <Scrubber
-        onSeek={pos => onSeek(pos)}
-        onSeekRelease={pos => onSeekRelease(pos)}
-        progress={progress}
-        theme={{ scrubberThumb: theme.scrubberThumb, scrubberBar: theme.scrubberBar }}
-      />
-      <ToggleIcon
-        paddingLeft
-        theme={theme.volume}
-        onPress={() => props.toggleMute()}
-        isOn={muted}
-        iconOff="volume-up"
-        iconOn="volume-mute"
-        size={20}
-      />
-      <Speed
-        paddingLeft
-        theme={theme.volume}
-        onPress={() => props.speed()}
-        size={15}
-        currentSpeed={currentSpeed}
-      />
-      <Time time={duration} theme={theme.duration} />
-      { !inlineOnly &&
-      <ToggleIcon
-        paddingRight
-        onPress={() => props.toggleFS()}
-        iconOff="fullscreen"
-        iconOn="fullscreen-exit"
-        isOn={fullscreen}
-        theme={theme.fullscreen}
-      />}
-    </LinearGradient>
-  )
+	_seekTo = (action) => {
+		var seekTime = (action) ? (props.currentTime - 10) : (props.currentTime + 10);
+		if (seekTime < 0) {
+			seekTime = 0;
+		}
+		else if (seekTime > props.duration) {
+			seekTime = props.duration
+		}
+		props.forward(seekTime);
+	}
+	return (
+		<LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']}>
+			<View style={styles.upperCont}>
+				<Time time={currentTime} theme={theme.seconds} />
+				<Scrubber
+					onSeek={pos => onSeek(pos)}
+					onSeekRelease={pos => onSeekRelease(pos)}
+					progress={progress}
+					theme={{ scrubberThumb: theme.scrubberThumb, scrubberBar: theme.scrubberBar }}
+				/>
+				<Time time={duration} theme={theme.duration} />
+			</View>
+			<View style={styles.lowerCont}>
+				<View style={styles.leftCont}>
+					<Speed
+						paddingLeft
+						paddingRight
+						theme={theme.volume}
+						onPress={() => props.speed()}
+						size={18}
+						currentSpeed={currentSpeed}
+					/>
+				</View>
+				<View style={styles.middleCont}>
+					<ToggleIcon
+						paddingLeft
+						paddingRight
+						theme={theme.volume}
+						onPress={() => _seekTo(true)}
+						isOn={true}
+						iconOff="replay-10"
+						iconOn="replay-10"
+						size={25}
+					/>
+					<ToggleIcon
+						paddingLeft
+						paddingRight
+						theme={theme.volume}
+						onPress={() => togglePlay()}
+						isOn={paused}
+						iconOff="pause"
+						iconOn="play-arrow"
+						size={40}
+					/>
+					<ToggleIcon
+						paddingLeft
+						paddingRight
+						theme={theme.volume}
+						onPress={() => _seekTo(false)}
+						isOn={true}
+						iconOff="forward-10"
+						iconOn="forward-10"
+						size={25}
+					/>
+				</View>
+				<View style={styles.rightCont}>
+					<ToggleIcon
+						paddingLeft
+						paddingRight
+						onPress={toggleCaptions}
+						iconOff="closed-caption"
+						iconOn="closed-caption"
+						isOn={captions}
+						theme={theme.fullscreen}
+					/>
+					{!inlineOnly &&
+						<ToggleIcon
+							paddingLeft
+							paddingRight
+							onPress={() => props.toggleFS()}
+							iconOff="fullscreen"
+							iconOn="fullscreen-exit"
+							isOn={fullscreen}
+							theme={theme.fullscreen}
+						/>}
+				</View>
+			</View>
+		</LinearGradient>
+	);
 }
 
 ControlBar.propTypes = {
-  toggleFS: PropTypes.func.isRequired,
-  toggleMute: PropTypes.func.isRequired,
-  onSeek: PropTypes.func.isRequired,
-  onSeekRelease: PropTypes.func.isRequired,
-  rewind: PropTypes.func.isRequired,
-  forward: PropTypes.func.isRequired,
-  fullscreen: PropTypes.bool.isRequired,
-  speed: PropTypes.func,
-  muted: PropTypes.bool.isRequired,
-  inlineOnly: PropTypes.bool.isRequired,
-  progress: PropTypes.number.isRequired,
-  currentTime: PropTypes.number.isRequired,
-  currentSpeed: PropTypes.number.isRequired,
-  duration: PropTypes.number.isRequired,
-  theme: PropTypes.object.isRequired
+	toggleFS: PropTypes.func.isRequired,
+	toggleMute: PropTypes.func.isRequired,
+	onSeek: PropTypes.func.isRequired,
+	onSeekRelease: PropTypes.func.isRequired,
+	rewind: PropTypes.func.isRequired,
+	forward: PropTypes.func.isRequired,
+	fullscreen: PropTypes.bool.isRequired,
+	speed: PropTypes.func,
+	muted: PropTypes.bool.isRequired,
+	inlineOnly: PropTypes.bool.isRequired,
+	progress: PropTypes.number.isRequired,
+	currentTime: PropTypes.number.isRequired,
+	currentSpeed: PropTypes.number.isRequired,
+	duration: PropTypes.number.isRequired,
+	theme: PropTypes.object.isRequired,
+	captions: PropTypes.bool.isRequired,
+	toggleCaptions: PropTypes.func.isRequired
 }
 
 export { ControlBar }
