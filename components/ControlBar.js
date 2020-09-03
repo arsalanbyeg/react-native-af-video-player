@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { ToggleIcon, Time, Scrubber, Speed } from './'
 
@@ -43,7 +43,8 @@ const ControlBar = (props) => {
 		theme,
 		inlineOnly,
 		captions,
-		toggleCaptions
+		toggleCaptions,
+		paused
 	} = props
 
 	_seekTo = (action) => {
