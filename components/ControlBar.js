@@ -44,7 +44,8 @@ const ControlBar = (props) => {
 		inlineOnly,
 		captions,
 		toggleCaptions,
-		paused
+		paused,
+		togglePlay
 	} = props
 
 	_seekTo = (action) => {
