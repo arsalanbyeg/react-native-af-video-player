@@ -48,16 +48,36 @@ const ControlBar = (props) => {
 		togglePlay
 	} = props
 
+	let noOfTaps = 0;
+	let lastPressTime = 0;
+	let timeout;
+
+	forwardRewindVideo = (seconds, add) => { // add = true is for add and false for subtract
+		noOfTaps = 0;
+		const currentTime = props.currentTime;
+		if (add ? (currentTime < (props.duration - seconds)) : (currentTime > seconds)) {
+			const offsetTime = add ? seconds : -seconds;
+			props.forward(currentTime + offsetTime);
+		}
+	};
+
 	_seekTo = (action) => {
-		var seekTime = (action) ? (props.currentTime - 10) : (props.currentTime + 10);
-		if (seekTime < 0) {
-			seekTime = 0;
+		const time = new Date().getTime();
+		const delta = time - lastPressTime;
+
+		if (noOfTaps > 0 && delta < 1000) {
+			++noOfTaps;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 1000);
+		} else {
+			++noOfTaps;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 1000);
 		}
-		else if (seekTime > props.duration) {
-			seekTime = props.duration
-		}
-		props.forward(seekTime);
-	}
+
+		lastPressTime = time;
+	};
+
 	return (
 		<LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']}>
 			<View style={styles.upperCont}>
@@ -86,7 +106,7 @@ const ControlBar = (props) => {
 						paddingLeft
 						paddingRight
 						theme={theme.volume}
-						onPress={() => _seekTo(true)}
+						onPress={() => _seekTo(false)}
 						isOn={true}
 						iconOff="replay-10"
 						iconOn="replay-10"
@@ -106,7 +126,7 @@ const ControlBar = (props) => {
 						paddingLeft
 						paddingRight
 						theme={theme.volume}
-						onPress={() => _seekTo(false)}
+						onPress={() => _seekTo(true)}
 						isOn={true}
 						iconOff="forward-10"
 						iconOn="forward-10"
