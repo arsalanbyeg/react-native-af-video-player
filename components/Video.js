@@ -19,6 +19,11 @@ import { Controls } from "./";
 import { checkSource } from "./utils";
 const backgroundColor = "#000";
 
+const textTrackTypes = {
+	index: "index",
+	disabled: "disabled"
+};
+
 const styles = StyleSheet.create({
 	background: {
 		backgroundColor,
@@ -67,7 +72,7 @@ class Video extends Component {
 			rate: this.props.rate,
 			seeking: false,
 			renderError: false,
-			captions: true
+			textTrackType: textTrackTypes.index
 		};
 		this.animInline = new Animated.Value(props.windowSize.width * 0.5625);
 		this.animFullscreen = new Animated.Value(props.windowSize.width * 0.5625);
@@ -362,7 +367,11 @@ class Video extends Component {
 	}
 
 	toggleCaptions = () => {
-		this.setState({ captions: !this.state.captions });
+		if (this.state.textTrackType === textTrackTypes.index) {
+			this.setState({ textTrackType: textTrackTypes.disabled });
+		} else {
+			this.setState({ textTrackType: textTrackTypes.index });
+		}
 	};
 
 	renderError() {
@@ -397,7 +406,7 @@ class Video extends Component {
 			duration,
 			inlineHeight,
 			currentTime,
-			captions
+			textTrackType
 		} = this.state;
 
 		const {
@@ -470,11 +479,11 @@ class Video extends Component {
 					onError={e => this.onError(e)}
 					onBuffer={this.onBuffer} // Callback when remote video is buffering
 					onTimedMetadata={e => onTimedMetadata(e)} // Callback when the stream receive some metadata
-					{... (captions && textTracks)
+					{... (textTracks)
 						?
 						{
 							selectedTextTrack: {
-								type: "index",
+								type: textTrackType,
 								value: selectedTextTrackIndex
 							},
 							textTracks: textTracks
@@ -508,7 +517,7 @@ class Video extends Component {
 					onMorePress={() => onMorePress()}
 					theme={setTheme}
 					inlineOnly={inlineOnly}
-					captions={captions}
+					captions={!!textTracks}
 					toggleCaptions={this.toggleCaptions}
 				/>
 			</Animated.View>

@@ -134,15 +134,17 @@ const ControlBar = (props) => {
 					/>
 				</View>
 				<View style={styles.rightCont}>
-					<ToggleIcon
-						paddingLeft
-						paddingRight
-						onPress={toggleCaptions}
-						iconOff="closed-caption"
-						iconOn="closed-caption"
-						isOn={captions}
-						theme={theme.fullscreen}
-					/>
+					{captions &&
+						<ToggleIcon
+							paddingLeft
+							paddingRight
+							onPress={toggleCaptions}
+							iconOff="closed-caption"
+							iconOn="closed-caption"
+							isOn={captions}
+							theme={theme.fullscreen}
+						/>
+					}
 					{!inlineOnly &&
 						<ToggleIcon
 							paddingLeft
