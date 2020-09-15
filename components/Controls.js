@@ -59,6 +59,11 @@ class Controls extends Component {
 		this.setState({ seeking: false, seconds: 0 });
 	}
 
+	onFastForward = (pos) => {
+		this.setState({ seconds: 0 });
+		this.props.forward(pos);
+	};
+
 	setTimer() {
 		this.timer = setInterval(() => {
 			switch (true) {
@@ -169,7 +174,7 @@ class Controls extends Component {
 						toggleMute={() => this.props.toggleMute()}
 						togglePlay={() => this.props.togglePlay()}
 						rewind={pos => this.props.rewind(pos)}
-						forward={pos => this.props.forward(pos)}
+						forward={this.onFastForward}
 						speed={() => this.props.speed()}
 						muted={muted}
 						paused={paused}

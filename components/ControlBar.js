@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
 	}
 });
 
+let noOfTaps = 0;
+let lastPressTime = 0;
+let timeout;
+
 const ControlBar = (props) => {
 	const {
 		onSeek,
@@ -48,10 +52,6 @@ const ControlBar = (props) => {
 		togglePlay
 	} = props
 
-	let noOfTaps = 0;
-	let lastPressTime = 0;
-	let timeout;
-
 	forwardRewindVideo = (seconds, add) => { // add = true is for add and false for subtract
 		noOfTaps = 0;
 		const currentTime = props.currentTime;
@@ -65,14 +65,14 @@ const ControlBar = (props) => {
 		const time = new Date().getTime();
 		const delta = time - lastPressTime;
 
-		if (noOfTaps > 0 && delta < 1000) {
+		if (noOfTaps > 0 && delta < 800) {
 			++noOfTaps;
 			clearTimeout(timeout);
-			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 1000);
+			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 800);
 		} else {
 			++noOfTaps;
 			clearTimeout(timeout);
-			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 1000);
+			timeout = setTimeout(() => forwardRewindVideo(10 * noOfTaps, action), 800);
 		}
 
 		lastPressTime = time;
