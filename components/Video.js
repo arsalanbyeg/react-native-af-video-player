@@ -439,7 +439,8 @@ class Video extends Component {
 			playWhenInactive,
 			progressUpdateInterval,
 			selectedTextTrackIndex,
-			textTracks
+			textTracks,
+			subtitlesStyle,
 		} = this.props;
 
 		const inline = {
@@ -474,8 +475,8 @@ class Video extends Component {
 				<Subtitles
 					videoDuration={currentTime}
 					source={this.props.captionSource}
-					textStyle={styles.subtitlesText(fullScreen)}
-					styles={styles.subtitlesContainer(fullScreen)}
+					textStyle={[styles.subtitlesText(fullScreen), subtitlesStyle.text]}
+					styles={[styles.subtitlesContainer(fullScreen), subtitlesStyle.container]}
 				/>
 				<VideoPlayer
 					{...checkSource(url)}
@@ -624,7 +625,11 @@ Video.defaultProps = {
 		height: Dimensions.get("window").height
 	},
 	selectedTextTrackIndex: 0,
-	captionSource: ""
+	captionSource: "",
+	subtitlesStyle: {
+		container: {},
+		text: {}
+	}
 };
 
 export default Video;
