@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Text, View, StyleSheet } from "react-native";
-import { parseVtt } from "../helpers/helpers";
 import parser from "subtitles-parser";
+import { parseVtt } from "./utils";
 import fs from "react-native-fs";
 
 const style = StyleSheet.create({
