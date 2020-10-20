@@ -15,7 +15,7 @@ import VideoPlayer, { TextTrackType } from "react-native-video";
 import KeepAwake from "react-native-keep-awake";
 import Orientation from "react-native-orientation";
 import Icons from "react-native-vector-icons/MaterialIcons";
-import { Controls } from "./";
+import { Controls, Subtitles } from "./";
 import { checkSource } from "./utils";
 const backgroundColor = "#000";
 
@@ -39,7 +39,19 @@ const styles = StyleSheet.create({
 		width: undefined,
 		height: undefined,
 		zIndex: 99
-	}
+	},
+	subtitlesContainer: fullScreen => ({
+		left: 0,
+		right: 0,
+		zIndex: 500,
+		alignSelf: "center",
+		position: "absolute",
+		justifyContent: "center",
+		bottom: fullScreen ? 80 : 70,
+	}),
+	subtitlesText: fullScreen => ({
+		fontSize: fullScreen ? 20 : 15
+	})
 });
 
 const defaultTheme = {
@@ -459,6 +471,12 @@ class Video extends Component {
 						{...checkSource(placeholder)}
 					/>
 				)}
+				<Subtitles
+					videoDuration={currentTime}
+					source={this.props.captionSource}
+					textStyle={styles.subtitlesText(fullScreen)}
+					styles={styles.subtitlesContainer(fullScreen)}
+				/>
 				<VideoPlayer
 					{...checkSource(url)}
 					paused={paused}
@@ -605,7 +623,8 @@ Video.defaultProps = {
 		width: Dimensions.get("window").width,
 		height: Dimensions.get("window").height
 	},
-	selectedTextTrackIndex: 0
+	selectedTextTrackIndex: 0,
+	captionSource: ""
 };
 
 export default Video;

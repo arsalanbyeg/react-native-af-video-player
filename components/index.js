@@ -11,5 +11,6 @@ export * from './Speed'
 export * from './ProgressBar'
 export * from './ScrollView'
 export * from './Container'
+export * from './Subtitles'
 
 export default Video
