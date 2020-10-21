@@ -441,6 +441,7 @@ class Video extends Component {
 			selectedTextTrackIndex,
 			textTracks,
 			subtitlesStyle,
+			captionSource
 		} = this.props;
 
 		const inline = {
@@ -472,12 +473,15 @@ class Video extends Component {
 						{...checkSource(placeholder)}
 					/>
 				)}
-				<Subtitles
-					videoDuration={currentTime}
-					source={this.props.captionSource}
-					textStyle={[styles.subtitlesText(fullScreen), subtitlesStyle.text]}
-					styles={[styles.subtitlesContainer(fullScreen), subtitlesStyle.container]}
-				/>
+				{
+					this.state.textTrackType !== textTrackTypes.disabled &&
+					<Subtitles
+						source={captionSource}
+						videoDuration={currentTime}
+						textStyle={[styles.subtitlesText(fullScreen), subtitlesStyle.text]}
+						styles={[styles.subtitlesContainer(fullScreen), subtitlesStyle.container]}
+					/>
+				}
 				<VideoPlayer
 					{...checkSource(url)}
 					paused={paused}
@@ -536,7 +540,7 @@ class Video extends Component {
 					onMorePress={() => onMorePress()}
 					theme={setTheme}
 					inlineOnly={inlineOnly}
-					captions={!!textTracks}
+					captions={!!textTracks || !!captionSource}
 					toggleCaptions={this.toggleCaptions}
 				/>
 			</Animated.View>
