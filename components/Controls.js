@@ -86,6 +86,7 @@ class Controls extends Component {
 
 	showControls() {
 		this.setState({ hideControls: false }, () => {
+			this.props.onControlToggle(this.state.hideControls);
 			this.progressbar.setValue(2);
 			Animated.parallel([
 				Animated.timing(this.animControls, { toValue: 1, duration: 200 }),
@@ -98,7 +99,9 @@ class Controls extends Component {
 		Animated.parallel([
 			Animated.timing(this.animControls, { toValue: 0, duration: 200 }),
 			Animated.timing(this.scale, { toValue: 0.25, duration: 200 })
-		]).start(() => this.setState({ hideControls: true, seconds: 0 }));
+		]).start(() =>  this.setState({ hideControls: true, seconds: 0 } , ()=>{
+			this.props.onControlToggle(this.state.hideControls);
+		}));
 	}
 
 	hiddenControls() {

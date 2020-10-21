@@ -40,17 +40,17 @@ const styles = StyleSheet.create({
 		height: undefined,
 		zIndex: 99
 	},
-	subtitlesContainer: fullScreen => ({
+	subtitlesContainer: (fullScreen , hideControls) => ({
 		left: 0,
 		right: 0,
-		zIndex: 500,
+		zIndex: 20,
 		alignSelf: "center",
 		position: "absolute",
 		justifyContent: "center",
-		bottom: fullScreen ? 80 : 70,
+		bottom: fullScreen ? 40 : hideControls ? 20 : 70,
 	}),
 	subtitlesText: fullScreen => ({
-		fontSize: fullScreen ? 20 : 15
+		fontSize: fullScreen ? 15 : 12
 	})
 });
 
@@ -84,7 +84,8 @@ class Video extends Component {
 			rate: this.props.rate,
 			seeking: false,
 			renderError: false,
-			textTrackType: textTrackTypes.index
+			textTrackType: textTrackTypes.index,
+			hideControls: false,
 		};
 		this.animInline = new Animated.Value(props.windowSize.width * 0.5625);
 		this.animFullscreen = new Animated.Value(props.windowSize.width * 0.5625);
@@ -418,8 +419,11 @@ class Video extends Component {
 			duration,
 			inlineHeight,
 			currentTime,
-			textTrackType
+			textTrackType,
+			hideControls
 		} = this.state;
+
+		console.log({hideControls})
 
 		const {
 			url,
@@ -478,8 +482,8 @@ class Video extends Component {
 					<Subtitles
 						source={captionSource}
 						videoDuration={currentTime}
-						textStyle={[styles.subtitlesText(fullScreen), subtitlesStyle.text]}
-						styles={[styles.subtitlesContainer(fullScreen), subtitlesStyle.container]}
+						textStyle={[styles.subtitlesText(fullScreen ), subtitlesStyle.text]}
+						styles={[styles.subtitlesContainer(fullScreen, hideControls), subtitlesStyle.container]}
 					/>
 				}
 				<VideoPlayer
@@ -542,6 +546,7 @@ class Video extends Component {
 					inlineOnly={inlineOnly}
 					captions={!!textTracks || !!captionSource}
 					toggleCaptions={this.toggleCaptions}
+					onControlToggle={hideControls => this.setState({ hideControls })}
 				/>
 			</Animated.View>
 		);
