@@ -3464,6 +3464,11 @@ strip-eof@^1.0.0:
   resolved "https://registry.yarnpkg.com/strip-eof/-/strip-eof-1.0.0.tgz#bb43ff5598a6eb05d89b59fcd129c983313606bf"
   integrity sha1-u0P/VZim6wXYm1n80SnJgzE2Br8=
 
+subtitles-parser-vtt@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/subtitles-parser-vtt/-/subtitles-parser-vtt-0.0.8.tgz#15456dee03b38649028992538e34cb5f9dd39d3b"
+  integrity sha512-/vrLZNb7bQGc6hhgCqYuwkIyNb80yHb4Y7VE/F9yFnjcp2JrMULtbqL+stfbA9x2xt8d6xo3s9bXLwho/qW+Tg==
+
 subtitles-parser@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/subtitles-parser/-/subtitles-parser-0.0.2.tgz#cf2fcc3e397b1c7f831e1365f6b3ce37d3155194"
