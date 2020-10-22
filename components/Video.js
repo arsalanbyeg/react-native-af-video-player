@@ -423,8 +423,6 @@ class Video extends Component {
 			hideControls
 		} = this.state;
 
-		console.log({hideControls})
-
 		const {
 			url,
 			loop,
