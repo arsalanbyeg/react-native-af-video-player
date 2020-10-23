@@ -3,33 +3,57 @@ export const checkSource = (uri) => {
     { source: { uri } } : { source: uri }
 };
 
-export const parseVtt = (data, useMs) => {
-  const parse = []
+export const dummy = (length, val) => {
+  let array = [];
+  for (let i = 0; i < length; i++) array.push(val || i);
+  return array;
+};
+
+export const parserVtt = data => {
   const getData = () => {
-      const enter = data.split("")[data.split("").length - 1] === "\n";
-      return `${data}${enter ? "" : "\n"}`;
+    const enter = data.split("")[data.split("").length - 1] === "\n";
+    return `${data}${enter ? "" : "\n"}`;
   };
 
-  const splitted = getData().split("\n");
-  splitted.map((e, i) => {
-      const time = String(splitted[i - 2]);
+  const getTimeFormat = (val = "") => {
+    const time = val.split(":");
+    time.length < 3 ? time.unshift(...dummy(3 - time.length, "00")) : time;
+    return time.join(":");
+  };
 
-      const getMS = (item = "") => {
-          const digit = item.split(":").reverse();
-          const zero = val => (val === null || val === undefined) ? 0 : val;
-          return zero(digit[0]) * 1000 + zero(digit[1]) * 60000 + zero(digit[2]) * 3600000;
-      };
+  var timeMs = (val = "") => {
+    var regex = /(\d+):(\d{2}):(\d{2})[,.](\d{3})/;
+    var parts = regex.exec(getTimeFormat(val.trim()));
+    if (parts === null) return 0;
+    for (var i = 1; i < 5; i++) {
+      parts[i] = parseInt(parts[i], 10);
+      if (isNaN(parts[i])) parts[i] = 0;
+    }
+    return parts[1] * 3600000 + parts[2] * 60000 + parts[3] * 1000 + parts[4];
+  };
 
-      if (!e) {
-          parse.push({
-              ...useMs ? {
-                  startTime: getMS(time.split("-->")[0]),
-                  endTime: getMS(time.split("-->")[1])
-              } : { time },
-              text: splitted[i - 1],
-          });
+  const fromSrt = () => {
+    var all = [];
+    var content = [];
+
+    getData().split("\n").map(item => {
+      if (item.trim() === "") {
+        all.push(content)
+        content = []
+      } else content.push(item);
+    });
+    
+    return all.slice(1).map((item, i) => {
+      const time = index => timeMs(String(item[0]).split("-->")[index]);
+      return {
+        id: i,
+        time: item[0],
+        startTime: time(0),
+        endTime: time(1),
+        text: all.slice(1)[i].slice(1).join("'\n'")
       }
-  });
+    })
+  };
 
-  return parse.map((e, id) => ({ ...e, id })).splice(1)
+  return fromSrt();
 };

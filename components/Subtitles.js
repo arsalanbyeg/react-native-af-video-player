@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Text, View, StyleSheet } from "react-native";
-import parseVtt from "subtitles-parser-vtt";
 import parserSRT from "subtitles-parser";
+import { parserVtt } from "./utils";
 import fs from "react-native-fs";
 
 const style = StyleSheet.create({
@@ -28,12 +28,11 @@ const Subtitles = ({ videoDuration, textStyle, source, styles }) => {
 
 	const getData = async () => {
 		if (!source) return;
-
 		try {
 			const isSrt = source.slice(source.lastIndexOf(".") + 1) === "srt";
-
+			
 			var file = await fs.readFile(source);
-			var parsedData = isSrt ? parserSRT.fromSrt(file, true) : parseVtt.fromSrt(file, "ms");
+			var parsedData = isSrt ? parserSRT.fromSrt(file, true) : parserVtt(file, "ms");
 			setData(parsedData);
 		} catch (error_subtitles) {
 			console.log(({ error_subtitles }))
