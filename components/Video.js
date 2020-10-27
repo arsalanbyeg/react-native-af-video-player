@@ -104,7 +104,7 @@ class Video extends Component {
 	}
 
 	onLoadStart() {
-		this.setState({ paused: true, loading: true });
+		this.setState({ paused: true, loading: true, videoLoaded: false });
 	}
 
 	onLoad(data) {
