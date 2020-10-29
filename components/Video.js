@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 		height: undefined,
 		zIndex: 99
 	},
-	subtitlesContainer: (fullScreen , hideControls) => ({
+	subtitlesContainer: (fullScreen, hideControls) => ({
 		left: 0,
 		right: 0,
 		zIndex: 20,
@@ -443,7 +443,8 @@ class Video extends Component {
 			selectedTextTrackIndex,
 			textTracks,
 			subtitlesStyle,
-			captionSource
+			captionSource,
+			onSubtitleError
 		} = this.props;
 
 		const inline = {
@@ -475,15 +476,14 @@ class Video extends Component {
 						{...checkSource(placeholder)}
 					/>
 				)}
-				{
-					this.state.textTrackType !== textTrackTypes.disabled &&
-					<Subtitles
-						source={captionSource}
-						videoDuration={currentTime}
-						textStyle={[styles.subtitlesText(fullScreen ), subtitlesStyle.text]}
-						styles={[styles.subtitlesContainer(fullScreen, hideControls), subtitlesStyle.container]}
-					/>
-				}
+				<Subtitles
+					source={captionSource}
+					onError={onSubtitleError}
+					videoDuration={currentTime}
+					disable={this.state.textTrackType === textTrackTypes.disabled}
+					textStyle={[styles.subtitlesText(fullScreen), subtitlesStyle.text]}
+					styles={[styles.subtitlesContainer(fullScreen, hideControls), subtitlesStyle.container]}
+				/>
 				<VideoPlayer
 					{...checkSource(url)}
 					paused={paused}
@@ -636,7 +636,8 @@ Video.defaultProps = {
 	subtitlesStyle: {
 		container: {},
 		text: {}
-	}
+	},
+	onSubtitleError: () => { }
 };
 
 export default Video;
