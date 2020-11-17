@@ -98,6 +98,12 @@ class Video extends Component {
 		BackHandler.addEventListener("hardwareBackPress", this.BackHandler);
 	}
 
+	componentDidUpdate(prevProps){
+		if(prevProps.url !== this.props.url){
+			this.setState({ renderError: false })
+		}
+	}
+
 	componentWillUnmount() {
 		Dimensions.removeEventListener("change", this.onRotated);
 		BackHandler.removeEventListener("hardwareBackPress", this.BackHandler);
@@ -281,6 +287,8 @@ class Video extends Component {
 	play() {
 		if (this.state.paused) this.togglePlay();
 	}
+
+	isPlaying = () => !this.state.paused;
 
 	togglePlay() {
 		this.setState({ paused: !this.state.paused }, () => {
