@@ -60,7 +60,7 @@ export const parserVtt = data => {
         time: item[0],
         startTime: time(0),
         endTime: time(1),
-        text: all.slice(1)[i].slice(1).join("'\n'")
+        text: all.slice(1)[i].slice(1).join("\n")
       }
     })
   };
